@@ -1,0 +1,28 @@
+#---DEMO 1---
+
+#Setting up the environment
+!pip install transformers
+!pip install diffusers
+!pip install accelerate
+!pip install opencv-python
+!pip install pillow
+
+#Upload image - copy from lecturer
+
+#Display uploaded image - copy from lecturer
+
+#Denoising the photo
+import cv2
+from google.colab.patches import cv2_imshow
+
+img = cv2.imread("Erasmus1_1Family.jpeg") #change to your own image name
+
+denoised = cv2.fastNlMeansDenoisingColored(
+    img,
+    None,
+    10, #change these parameters and notice how denoising changes
+    10,
+    7,
+    21
+)
+#Display denoised image - copy from lecturer or add on your own
