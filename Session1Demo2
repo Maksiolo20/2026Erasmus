@@ -1,0 +1,46 @@
+#---Demo 2---
+#install core library, repository and dependencies
+!pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+!git clone https://github.com/xinntao/Real-ESRGAN.git
+%cd Real-ESRGAN
+!pip install basicsr facexlib gfpgan sewar
+!pip install -r requirements.txt
+!python setup.py develop
+
+#download pre-trained model for inference (super-resoultion)
+!wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P experiments/pretrained_models
+
+#patch previous downloads
+import os
+import re
+import site
+deg_file = '/usr/local/lib/python3.12/dist-packages/basicsr/data/degradations.py'
+try:
+    with open(deg_file, 'r') as f: content = f.read()
+    content = re.sub(r"from torchvision.transforms.functional_tensor import rgb_to_grayscale",
+                     r"import torchvision.transforms.functional as F\ndef rgb_to_grayscale(img):\n    return F.rgb_to_grayscale(img)", content)
+    with open(deg_file, 'w') as f: f.write(content)
+except FileNotFoundError: pass
+
+#upload own image - copy from lecturer or create on your own
+
+#load an image and do the inference
+!python inference_realesrgan.py -n RealESRGAN_x4plus -i {img_name} -o ../results_x2 --outscale 2
+!python inference_realesrgan.py -n RealESRGAN_x4plus -i {img_name} -o ../results_x4 --outscale 4
+%cd /content
+
+#show results
+import cv2
+import matplotlib.pyplot as plt
+base, ext = os.path.splitext(img_name)
+
+img_orig = cv2.cvtColor(cv2.imread(f'/content/Real-ESRGAN/{img_name}'), cv2.COLOR_BGR2RGB)
+img_x2 = cv2.cvtColor(cv2.imread(f'results_x2/{base}_out{ext}'), cv2.COLOR_BGR2RGB)
+img_x4 = cv2.cvtColor(cv2.imread(f'results_x4/{base}_out{ext}'), cv2.COLOR_BGR2RGB)
+
+fig, ax = plt.subplots(1, 3, figsize=(18, 6))
+ax[0].imshow(img_orig); ax[0].set_title(f"Original ({img_orig.shape[1]}x{img_orig.shape[0]})"); ax[0].axis('off')
+ax[1].imshow(img_x2);   ax[1].set_title(f"Real-ESRGAN x2 ({img_x2.shape[1]}x{img_x2.shape[0]})");   ax[1].axis('off')
+ax[2].imshow(img_x4);   ax[2].set_title(f"Real-ESRGAN x4 ({img_x4.shape[1]}x{img_x4.shape[0]})");   ax[2].axis('off')
+plt.tight_layout()
+plt.show()
