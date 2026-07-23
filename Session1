@@ -1,0 +1,14 @@
+#---DEMO 1---
+
+#Setting up the environment
+!pip install transformers
+!pip install diffusers
+!pip install accelerate
+!pip install opencv-python
+!pip install pillow
+
+#Upload image - copy from lecturer
+
+#Display uploaded image - copy from lecturer
+
+#
