@@ -1,4 +1,6 @@
 #---Demo 2---
+#Make sure you switch runtime to GPU
+
 #install core library, repository and dependencies
 !pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 !git clone https://github.com/xinntao/Real-ESRGAN.git
@@ -29,12 +31,13 @@ except FileNotFoundError: pass
 !python inference_realesrgan.py -n RealESRGAN_x4plus -i {img_name} -o ../results_x4 --outscale 4
 %cd /content
 
-#show results
+#displaying the result
 import cv2
 import matplotlib.pyplot as plt
+
 base, ext = os.path.splitext(img_name)
 
-img_orig = cv2.cvtColor(cv2.imread(f'/content/Real-ESRGAN/{img_name}'), cv2.COLOR_BGR2RGB)
+img_orig = cv2.cvtColor(cv2.imread(f'/content/{img_name}'), cv2.COLOR_BGR2RGB)
 img_x2 = cv2.cvtColor(cv2.imread(f'results_x2/{base}_out{ext}'), cv2.COLOR_BGR2RGB)
 img_x4 = cv2.cvtColor(cv2.imread(f'results_x4/{base}_out{ext}'), cv2.COLOR_BGR2RGB)
 
