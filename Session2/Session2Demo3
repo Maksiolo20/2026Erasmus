@@ -1,0 +1,28 @@
+#---DEMO 3---
+
+#Install and import libraries
+!apt-get install tesseract-ocr
+!pip install pytesseract
+
+import pytesseract
+from PIL import Image
+from google.colab import files
+import matplotlib.pyplot as plt
+
+#Upload image
+uploaded = files.upload()
+
+filename = list(uploaded.keys())[0]
+
+img = Image.open(filename)
+
+#Display image
+plt.imshow(img)
+plt.axis("off")
+plt.show()
+
+#Extract text
+text = pytesseract.image_to_string(img)
+
+#Print result
+print(text)
