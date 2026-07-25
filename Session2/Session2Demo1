@@ -1,0 +1,35 @@
+#---DEMO 1---
+
+#Install libraries
+!pip install rembg
+!pip install onnxruntime
+
+#Imports
+from rembg import remove
+from PIL import Image
+from google.colab import files
+import matplotlib.pyplot as plt
+
+#Upload image and load it
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+image = Image.open(filename)
+
+#Remove backround
+output = remove(image)
+
+#Display results
+plt.figure(figsize=(14,7))
+
+plt.subplot(1,2,1)
+plt.imshow(image)
+plt.title("Original")
+plt.axis("off")
+
+plt.subplot(1,2,2)
+plt.imshow(output)
+plt.title("Background Removed")
+plt.axis("off")
+
+plt.show()
