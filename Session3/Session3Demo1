@@ -1,0 +1,44 @@
+#Demo 1 - Vehicle Detection
+#Libraries - instalation and importing
+!pip install ultralytics
+
+from ultralytics import YOLO
+from google.colab import files
+
+#Upload Video
+uploaded = files.upload()
+video = list(uploaded.keys())[0]
+
+#Load Pretrained model
+model = YOLO("yolov8n.pt")
+
+#Run Object Detection
+results = model(
+    video,
+    save=True,
+    show=False
+)
+
+#Display detected Objects
+for box in results[0].boxes:
+    label = model.names[int(box.cls[0])]
+    confidence = float(box.conf[0])
+
+    print(f"{label}: {confidence:.2f}")
+
+#Convert to mp4 format
+
+output_mp4_path = os.path.join(output_dir, output_videos[0].replace('.avi', '.mp4'))
+
+!ffmpeg -i "{output_video_path}" -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k -y "{output_mp4_path}"
+
+print(f"Converted video saved to: {output_mp4_path}")
+
+#Show output video
+from IPython.display import Video, display
+
+if os.path.exists(output_mp4_path):
+    print(f"Displaying converted MP4 video from: {output_mp4_path}")
+    display(Video(output_mp4_path, embed=True))
+else:
+    print("Error: MP4 video conversion failed or file not found.")

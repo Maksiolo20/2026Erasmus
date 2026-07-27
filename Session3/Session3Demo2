@@ -1,0 +1,31 @@
+#Demo 2 - Traffic Signs Detection
+#Install and Import Libraries
+!pip install transformers
+
+from transformers import pipeline
+from google.colab import files
+from PIL import Image
+import matplotlib.pyplot as plt
+
+#Load Pretrained model
+classifier = pipeline(
+    "image-classification",
+    model="microsoft/resnet-50"
+)
+
+#Load image and display it
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+img = Image.open(filename)
+
+plt.imshow(img)
+plt.axis("off")
+plt.show()
+
+#Predict Sign
+results = classifier(img)
+
+#Show results
+for result in results[:5]:
+    print(f"{result['label']} - {result['score']:.3f}")
