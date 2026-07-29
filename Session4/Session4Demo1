@@ -1,0 +1,33 @@
+#Demo 1 - Image Captioning
+
+#Install and import libraries
+!pip -q install transformers accelerate sentencepiece
+
+from transformers import pipeline
+from google.colab import files
+from PIL import Image
+import matplotlib.pyplot as plt
+
+#Load pretrained model
+captioner = pipeline(
+    task="image-text-to-text",
+    model="Salesforce/blip-image-captioning-base",
+    device=-1
+)
+
+#Upload image
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+
+#Display image
+img = Image.open(filename)
+
+plt.imshow(img)
+plt.axis("off")
+plt.show()
+
+#Display Caption
+result = captioner(images=img, text="")
+
+print("Generated caption:")
+print(result[0]["generated_text"])
