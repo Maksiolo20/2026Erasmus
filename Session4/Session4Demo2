@@ -1,0 +1,41 @@
+#Demo 2 - Document Classification
+
+#install required packages
+!pip -q install transformers accelerate sentencepiece
+
+from transformers import pipeline
+from google.colab import files
+from PIL import Image
+import matplotlib.pyplot as plt
+
+#initialize image classifiaction pipeline
+classifier = pipeline(
+    task="zero-shot-image-classification",
+    model="openai/clip-vit-base-patch32",
+    device=-1
+)
+
+#upload an image (of a document)
+uploaded = files.upload()
+filename = list(uploaded.keys())[0]
+img = Image.open(filename)
+
+#display image
+plt.imshow(img)
+plt.axis("off")
+plt.show()
+
+#define candidates
+labels = ["invoice", "receipt", "letter", "business card", "tax form"]
+
+#run prediction
+results = classifier(img, candidate_labels=labels)
+
+#display most fitting candidates and confidence scores
+best_label = results[0]['label']
+best_score = results[0]['score']
+
+print(f"Predicted Document Type: {best_label.upper()} ({best_score:.1%} confidence)\n")
+print("Top Scores:")
+for res in results[:3]:
+    print(f"- {res['label']}: {res['score']:.1%}")
